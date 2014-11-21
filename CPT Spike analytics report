@@ -1,0 +1,362 @@
+SET job.priority 'NORMAL';
+SET pig.encrypt.keyResolver 'org.apache.pig.crypto.shims.MappingKeyResolver';
+SET pig.encrypt.key.mapping.file 'file:////opt/key/all/allkeymappingload.xml';
+SET pig.ignoreBadFiles.force true;
+
+REGISTER 'udf_max.py' using jython;
+
+Clms = LOAD '/refined/subsets/t1/not_restricted/HNT*/{2013,2014}/' USING PigStorage('\\u1') AS
+(tp_payer_key: int
+,tp_tx_key: chararray
+,ts_tx_stream_key: chararray
+,ts_tx_seq: chararray
+,ts_tx_type_code: chararray
+,ts_product_type: chararray
+,ts_received_date: chararray
+,c_claim_id: chararray
+,l_line_seq: chararray
+,m_sub_id: chararray
+,member_key: chararray
+,dep_id: chararray
+,c_dob: chararray
+,c_gender_id: chararray
+,member_dob_not_used: chararray
+,member_gender_not_used: chararray
+,cub_bill_type: chararray
+,cond_code_1: chararray
+,cond_code_2: chararray
+,cond_code_3: chararray
+,cond_code_4: chararray
+,cond_code_5: chararray
+,cond_code_6: chararray
+,cond_code_7: chararray
+,cond_code_8: chararray
+,cond_code_9: chararray
+,cond_code_10: chararray
+,cond_code_11: chararray
+,cond_code_12: chararray
+,cond_code_13: chararray
+,cond_code_14: chararray
+,cond_code_15: chararray
+,cond_code_16: chararray
+,cond_code_17: chararray
+,cond_code_18: chararray
+,cond_code_19: chararray
+,cond_code_20: chararray
+,cond_code_21: chararray
+,cond_code_22: chararray
+,cond_code_23: chararray
+,cond_code_24: chararray
+,claim_diag_1: chararray
+,claim_diag_2: chararray
+,claim_diag_3: chararray
+,claim_diag_4: chararray
+,claim_diag_5: chararray
+,claim_diag_6: chararray
+,claim_diag_7: chararray
+,claim_diag_8: chararray
+,claim_diag_9: chararray
+,claim_diag_10: chararray
+,claim_diag_11: chararray
+,claim_diag_12: chararray
+,claim_diag_13: chararray
+,claim_diag_14: chararray
+,claim_diag_15: chararray
+,claim_diag_16: chararray
+,claim_diag_17: chararray
+,claim_diag_18: chararray
+,claim_diag_19: chararray
+,claim_diag_20: chararray
+,claim_diag_21: chararray
+,claim_diag_22: chararray
+,claim_diag_23: chararray
+,claim_diag_24: chararray
+,claim_diag_25: chararray
+,admit_diag: chararray
+,line_diag_1: chararray
+,line_diag_2: chararray
+,line_diag_3: chararray
+,line_diag_4: chararray
+,p_provider_id: chararray
+,provider_key: chararray
+,subspec_id: chararray
+,t_taxgroup_id: chararray
+,taxgroup_key: chararray
+,l_dos_from: chararray
+,l_dos_to: chararray
+,pos_id: chararray
+,l_insurance_key: chararray
+,l_insurance_id: chararray
+,sub_rev_code: chararray
+,sub_cpt: chararray
+,sub_mod1: chararray
+,sub_mod2: chararray
+,sub_mod3: chararray
+,sub_mod4: chararray
+,l_sub_units: double
+,l_sub_amount: double
+,rev_code: chararray
+,cpt: chararray
+,mod1: chararray
+,mod2: chararray
+,mod3: chararray
+,mod4: chararray
+,l_units: double
+,l_amount: double
+,l_copay: double
+,l_coinsurance: double
+,l_deductible: double
+,l_cob: double
+,l_other_reduction: double
+,l_paid: double
+,l_paid_date: chararray
+,l_bypass_code: chararray
+,l_claim_type: chararray
+,l_par_yn: chararray
+,l_line_key: long
+,c_claim_key: long
+,c_claim_master_key: long
+,subspec_code: chararray
+,ssl_spec_code: chararray
+,pos: chararray
+,rr_rec_cpt: chararray
+,rr_rec_mod1: chararray
+,rr_rec_mod2: chararray
+,rr_rec_mod3: chararray
+,rr_rec_mod4: chararray
+,rr_rec_units: double
+,rr_rec_pct: double
+,c_claim_id_orig: chararray
+,l_line_seq_orig: chararray
+,c_cdf_text_1: chararray
+,c_cdf_text_2: chararray
+,c_cdf_text_3: chararray
+,l_cdf_text_1: chararray
+,l_cdf_text_2: chararray
+,l_cdf_text_3: chararray
+,l_provider_zip: chararray
+,l_provider_plus_4: chararray
+,l_tos: chararray
+,rt_rec_tx_line_key: chararray
+,tp_payer_short: chararray
+,cub_drg: chararray
+,ts_stream_key: chararray
+,c_group_id: chararray
+,c_partner_id: chararray
+,cub_dos_from: chararray
+,cub_dos_to: chararray
+,cub_admit_date: chararray
+,cub_admit_hour: chararray
+,cub_admit_minute: chararray
+,cub_admit_type: chararray
+,cub_discharge_date: chararray
+,cub_discharge_hour: chararray
+,cub_discharge_minute: chararray
+,cub_discharge_status: chararray
+,cub_sub_drg: chararray
+,cub_sub_severity: chararray
+,cub_severity: chararray
+,cub_sub_noncovered_amount: double
+,cub_claim_billed_amount: double
+,cub_claim_noncovered_amount: double
+,cub_claim_allowed_amount: double
+,cub_claim_paid_amount: double
+,cub_assignment_of_benefits: chararray
+,cub_prior_payments: double
+,cub_npi_attending: chararray
+,cub_date_adjudicated: chararray
+,cub_date_received_client: chararray
+,cub_claim_type: chararray
+,cub_par_yn: chararray
+,cub_npi: chararray
+,cub_paid_date: chararray
+,cub_product_state: chararray
+,cub_grouper_id: chararray
+,cub_grouper_key: chararray
+,cub_claim_denial_rsn_cd: chararray
+,cub_alc_days: int
+,cub_birth_weight: double
+,claim_diag_poa_1: chararray
+,claim_diag_poa_2: chararray
+,claim_diag_poa_3: chararray
+,claim_diag_poa_4: chararray
+,claim_diag_poa_5: chararray
+,claim_diag_poa_6: chararray
+,claim_diag_poa_7: chararray
+,claim_diag_poa_8: chararray
+,claim_diag_poa_9: chararray
+,claim_diag_poa_10: chararray
+,claim_diag_poa_11: chararray
+,claim_diag_poa_12: chararray
+,claim_diag_poa_13: chararray
+,claim_diag_poa_14: chararray
+,claim_diag_poa_15: chararray
+,claim_diag_poa_16: chararray
+,claim_diag_poa_17: chararray
+,claim_diag_poa_18: chararray
+,claim_diag_poa_19: chararray
+,claim_diag_poa_20: chararray
+,claim_diag_poa_21: chararray
+,claim_diag_poa_22: chararray
+,claim_diag_poa_23: chararray
+,claim_diag_poa_24: chararray
+,claim_diag_poa_25: chararray
+,admit_diag_poa: chararray
+,ecode_diag_1: chararray
+,ecode_poa_1: chararray
+,ecode_diag_2: chararray
+,ecode_poa_2: chararray
+,ecode_diag_3: chararray
+,ecode_poa_3: chararray
+,rfv_diag_1: chararray
+,rfv_poa_1: chararray
+,value_code_1: chararray
+,value_amount_1: double
+,value_code_2: chararray
+,value_amount_2: double
+,value_code_3: chararray
+,value_amount_3: double
+,value_code_4: chararray
+,value_amount_4: double
+,value_code_5: chararray
+,value_amount_5: double
+,icd_proc_1: chararray
+,icd_proc_date_1: chararray
+,icd_proc_2: chararray
+,icd_proc_date_2: chararray
+,icd_proc_3: chararray
+,icd_proc_date_3: chararray
+,icd_proc_4: chararray
+,icd_proc_date_4: chararray
+,icd_proc_5: chararray
+,icd_proc_date_5: chararray
+,icd_proc_6: chararray
+,icd_proc_date_6: chararray
+,icd_proc_7: chararray
+,icd_proc_date_7: chararray
+,icd_proc_8: chararray
+,icd_proc_date_8: chararray
+,icd_proc_9: chararray
+,icd_proc_date_9: chararray
+,icd_proc_10: chararray
+,icd_proc_date_10: chararray
+,icd_proc_11: chararray
+,icd_proc_date_11: chararray
+,icd_proc_12: chararray
+,icd_proc_date_12: chararray
+,l_void_yn: chararray
+,l_npi: chararray
+,l_edit_0_allowed_yn: chararray
+,l_zero_chg_line_seq: chararray
+,l_zero_chg_sched_amount: double
+,l_contract_id: chararray
+,l_ndc: chararray
+,l_er_visit_yn: chararray
+,rr_reason1_code: chararray
+,rr_reason1_id: chararray
+,rr_claim1_id: chararray
+,rr_line1_seq: chararray
+,rr_rec1_pct: double
+,rr_rec1_units: double
+,rr_sub_rule1_key: int
+,rr_dp1_key: int
+,rr_reason2_code: chararray
+,rr_reason2_id: chararray
+,rr_claim2_id: chararray
+,rr_line2_seq: chararray
+,rr_rec2_pct: double
+,rr_rec2_units: double
+,rr_sub_rule2_key: int
+,rr_dp2_key: int
+,rr_reason3_code: chararray
+,rr_reason3_id: chararray
+,rr_claim3_id: chararray
+,rr_line3_seq: chararray
+,rr_rec3_pct: double
+,rr_rec3_units: double
+,rr_sub_rule3_key: int
+,rr_dp3_key: int
+,rr_bundling_rec_yn: chararray
+,sub_rule_key_last: int
+,date: chararray
+,iht_saving: double
+);
+
+
+A = FOREACH Clms GENERATE  
+		  tp_payer_short as payer
+		, cpt
+		, l_paid
+		,ts_received_date;
+
+month1 = Filter A by SUBSTRING(ts_received_date,0,7) == '$month_0';
+month1_A = Group month1 by (payer,cpt);
+month1_B = Foreach month1_A generate FLATTEN(group) as (payer,cpt), SUM(month1.l_paid) as paid_month1;
+
+month2 = Filter A by SUBSTRING(ts_received_date,0,7) == '$month_1';
+month2_A = Group month2 by (payer,cpt);
+month2_B = Foreach month2_A generate FLATTEN(group) as (payer,cpt), SUM(month2.l_paid) as paid_month2;
+
+month3 = Filter A by SUBSTRING(ts_received_date,0,7) == '$month_2';
+month3_A = Group month3 by (payer,cpt);
+month3_B = Foreach month3_A generate FLATTEN(group) as (payer,cpt), SUM(month3.l_paid) as paid_month3;
+
+month4 = Filter A by SUBSTRING(ts_received_date,0,7) == '$month_3';
+month4_A = Group month4 by (payer,cpt);
+month4_B = Foreach month4_A generate FLATTEN(group) as (payer,cpt), SUM(month4.l_paid) as paid_month4;
+
+month5 = Filter A by SUBSTRING(ts_received_date,0,7) == '$month_4';
+month5_A = Group month5 by (payer,cpt);
+month5_B = Foreach month5_A generate FLATTEN(group) as (payer,cpt), SUM(month5.l_paid) as paid_month5;
+
+month6 = Filter A by SUBSTRING(ts_received_date,0,7) == '$month_5';
+month6_A = Group month6 by (payer,cpt);
+month6_B = Foreach month6_A generate FLATTEN(group) as (payer,cpt), SUM(month6.l_paid) as paid_month6;
+
+Spike = JOIN month1_B by (payer,cpt), month2_B by (payer,cpt);
+Spike1 = JOIN Spike by (month1_B::payer,month1_B::cpt), month3_B by (payer,cpt);
+Spike2 = JOIN Spike1 by (Spike::month1_B::payer,Spike::month1_B::cpt), month4_B by (payer,cpt);
+Spike3 = JOIN Spike2 by (Spike1::Spike::month1_B::payer,Spike1::Spike::month1_B::cpt), month5_B by (payer,cpt);
+Spike4 = JOIN Spike3 by (Spike2::Spike1::Spike::month1_B::payer,Spike2::Spike1::Spike::month1_B::cpt), month6_B by (payer,cpt);
+
+Matrix = Foreach Spike4 generate Spike3::Spike2::Spike1::Spike::month1_B::payer as payer
+				,Spike3::Spike2::Spike1::Spike::month1_B::cpt as cpt
+				,Spike3::Spike2::Spike1::Spike::month1_B::paid_month1 as paid_month1
+				,Spike3::Spike2::Spike1::Spike::month2_B::paid_month2 as paid_month2
+				,Spike3::Spike2::Spike1::month3_B::paid_month3        as paid_month3
+				,Spike3::Spike2::month4_B::paid_month4		     as paid_month4
+				,Spike3::month5_B::paid_month5			     as paid_month5
+				,month6_B::paid_month6                                as paid_month6;
+
+
+Matrix1 = Foreach Matrix generate $0..$7,column_sum(paid_month1,paid_month2,paid_month3,paid_month4,paid_month5,paid_month6) as total_paid
+		,column_avg(paid_month1,paid_month2,paid_month3,paid_month4,paid_month5,paid_month6) as SixMonthMean
+		, column_max(paid_month1,paid_month2,paid_month3,paid_month4,paid_month5,paid_month6) as max_paid
+		,column_max(paid_month1,paid_month2,paid_month3,paid_month4,paid_month5,paid_month6)/column_avg(paid_month1,paid_month2,paid_month3,paid_month4,paid_month5,paid_month6) as ratio
+		,((paid_month2-paid_month1)/paid_month1) as pct_change_1_2
+		,((paid_month3-paid_month2)/paid_month2) as pct_change_2_3
+		,((paid_month4-paid_month3)/paid_month3) as pct_change_3_4
+		,((paid_month5-paid_month4)/paid_month4) as pct_change_4_5
+		,((paid_month6-paid_month5)/paid_month5) as pct_change_5_6;
+
+
+
+
+
+CPT_MASTER = LOAD '/refined/mdm/cpt_master' USING PigStorage('\\u1') AS 
+			(cpt_code: chararray, short_desc: chararray, med_desc: chararray, long_desc: chararray, cpt_origin_code: chararray);
+
+CPT_Ratio = JOIN Matrix1 by cpt, CPT_MASTER by cpt_code using 'replicated';
+
+CPT_Ratio1 = FOREACH CPT_Ratio Generate Matrix1::payer,Matrix1::cpt,CPT_MASTER::short_desc,Matrix1::paid_month1,Matrix1::paid_month2,Matrix1::paid_month3
+				,Matrix1::paid_month4,Matrix1::paid_month5,Matrix1::paid_month6,Matrix1::total_paid as total_paid,Matrix1::SixMonthMean,Matrix1::max_paid
+				,Matrix1::ratio,Matrix1::pct_change_1_2,Matrix1::pct_change_2_3,Matrix1::pct_change_3_4,Matrix1::pct_change_4_5,Matrix1::pct_change_5_6;
+
+FinalReport = Filter CPT_Ratio1 by total_paid >= 75000 AND ratio>=1.5;
+
+rmf /user/sjain/CPT_Spike_Pivot
+STORE FinalReport into '/user/sjain/CPT_Spike_Pivot' using PigStorage('|');
+
+-- hadoop fs -getmerge /user/sjain/CPT_Spike_Pivot  CPT_Spike_Pivot.txt
+
+
